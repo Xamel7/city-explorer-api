@@ -6,14 +6,23 @@ exports.movies = async function (request, response) {
     };
 
     class Movie {
-        constructor(title, overview, description, release_date) {
-            this.title = title;
-            this.overview = overview;
-            this.description = description;
-            this.release_date = release_date;
+        constructor(adult, backdrop_path, genre_ids, id, original_language, original_title, overview, popularity, poster_path, release_date, title, video, vote_average, vote_count) {
+            this.adult = adult
+            this.backdrop_path = backdrop_path
+            this.genre_ids = genre_ids
+            this.id = id
+            this.original_language = original_language
+            this.original_title = original_title
+            this.overview = overview
+            this.popularity = popularity
+            this.release_date = release_date
+            this.title = title
+            this.video = video
+            this.vote_average = vote_average
+            this.vote_count = vote_count
         }
     }
-
+    
     const { searchQuery } = request.query;// Destructures searchQuery from the request query parameters
 
     // Send a GET request to the movie API to search for movies
