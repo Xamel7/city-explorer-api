@@ -4,14 +4,13 @@
 const express = require('express'); // create an object for the express library
 const dotenv = require("dotenv");
 const cors = require("cors");
-const weatherData = require('./data/weather.json');
+const weatherData = require('./weather.js');
 const axios = require("axios")
 
 dotenv.config()
 //initialize app
 const app = express();
 app.use(cors())
-
 
 class Forecast {
     constructor(date, description) {
@@ -41,6 +40,7 @@ app.get('/weatherData', async function (request, response) {
 
     response.send(forecastArray);
 });
+
 let headers = {
     Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTk1ZmM0MDY1NWJlMzMxNzM5ZWRlYTgyYWIzYzk0YiIsInN1YiI6IjY0NTEyMGYxZDcxMDdlMDE2YjdlMmRlZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YIyiiCYdz96GXPY2WOGQkodkg_wxvKFrkXlZvjVgLdk"
 }
