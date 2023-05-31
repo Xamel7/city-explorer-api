@@ -1,17 +1,22 @@
 const axios = require('axios');
+const Node = require("node-cache")
+
+
+const cache = new Node();
 
 exports.weatherData = async function (request, response) {
 
     class Forecast {
-        constructor(date, description, lat, lon) {
+        constructor(date, description, lat, lon, city_name) {
             this.date = date;// Represents the date of the forecast
             this.description = description;// Describes the weather conditions
             this.lat = lat;// Latitude of the forecast location
             this.lon = lon; // Longitude of the forecast location
+            this.city_name = city_name;
         }
     }
 
-    const { lat, lon, searchQuery } = request.query; // Destructures lat, lon, and searchQuery from the request query parameters
+    const { lat, lon, searchQuery } = request.query; 
 
     try {
         const weatherResponse = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?key=5a3dadd8b09144089b3e76db33b590d3&city=${searchQuery}`);
