@@ -14,8 +14,8 @@ const app = express();
 app.use(cors())
 
 //configure routes
-app.get('./Mods/weatherData', weatherData.weatherData)
-app.get('./Mods/movie', movies.movies)
+app.get('/weatherData', weatherData.weatherData)
+app.get('/movie', movies.movies)
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

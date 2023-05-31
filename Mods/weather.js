@@ -3,7 +3,7 @@ const axios = require('axios');
 exports.weatherData = async function (request, response) {
 
     class Forecast {
-        constructor(date, description, lat, lon, cityname) {
+        constructor(date, description, lat, lon) {
             this.date = date;// Represents the date of the forecast
             this.description = description;// Describes the weather conditions
             this.lat = lat;// Latitude of the forecast location
