@@ -2,7 +2,7 @@ const axios = require('axios');
 const Node = require("node-cache")
 
 
-const cache = new Node();
+const cache = new Node()
 
 exports.weatherData = async function (request, response) {
 
@@ -16,18 +16,17 @@ exports.weatherData = async function (request, response) {
         }
     }
 
-    const { lat, lon, searchQuery } = request.query; 
+    const { lat, lon, searchQuery } = request.query;
 
     try {
-        const weatherResponse = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?key=5a3dadd8b09144089b3e76db33b590d3&city=${searchQuery}`);
-        const cities = weatherResponse.data;// Stores the response data from the weather API
+        let cities = cache.get(searchQuery)
+        if (cities !== undefined) {
 
-        if (cities === undefined) {
-            // Throw an error if the cities data is undefined
-            const error = new Error('City not found');
-            error.statusCode = 500;
-            throw error;
-        }
+            let weatherResponse = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?key=5a3dadd8b09144089b3e76db33b590d3&city=${searchQuery}`);
+            cities = weatherResponse.data;// Stores the response data from the weather API
+        } else (
+            console.log("cache hit")
+        )
 
         const forecastArray = cities.data.map((element) => new Forecast(element.datetime, element.weather.description));
         // Maps the cities data to create an array of forecast objects using the Forecast class
@@ -36,6 +35,6 @@ exports.weatherData = async function (request, response) {
     } catch (error) {
         console.error(error);
         response.status(error.statusCode || 500).send('Error occurred while fetching weather data');
-         // Sends an appropriate error status code and message as the response
+        // Sends an appropriate error status code and message as the response
     }
 };
