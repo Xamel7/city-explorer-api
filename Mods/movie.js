@@ -1,4 +1,9 @@
 const axios = require('axios');
+const Node = require("node-cache")
+
+
+let cache = new Node();
+
 
 exports.movies = async function (request, response) {
     const headers = {
@@ -27,15 +32,23 @@ exports.movies = async function (request, response) {
 
     // Send a GET request to the movie API to search for movies
     try {
-        const movieResponse = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
-            params: {
-                api_key: process.env.MOVIE_API_KEY,// Uses the MOVIE_API_KEY from environment variables
-                query: searchQuery  // Sets the query parameter for the movie search
-            },
-            headers: headers // Sets the headers for authorization
-        });
-        console.log(movieResponse.data);
-        response.send(movieResponse.data.results); // Sends the movie results as the response
+        let movieResponse = cache.get(searchQuery)
+        if(movieResponse === undefined){
+
+            movieResponse = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
+                params: {
+                    api_key: process.env.MOVIE_API_KEY,// Uses the MOVIE_API_KEY from environment variables
+                    query: searchQuery  // Sets the query parameter for the movie search
+                },
+                headers: headers // Sets the headers for authorization
+            });
+            cache.set(searchQuery, movieResponse.data)
+            movieResponse = movieResponse.data
+            console.log("CACHE MISS")
+        }else{
+            console.log("CACHE HIT")
+        }
+        response.send(movieResponse.results); // Sends the movie results as the response
     } catch (error) {
         console.error(error);
         response.status(500).send(error.message);// Sends an internal server error status code and the error message as the response

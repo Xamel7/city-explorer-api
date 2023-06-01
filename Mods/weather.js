@@ -2,7 +2,7 @@ const axios = require('axios');
 const Node = require("node-cache")
 
 
-const cache = new Node();
+let cache = new Node();
 
 exports.weatherData = async function (request, response) {
 
@@ -19,14 +19,15 @@ exports.weatherData = async function (request, response) {
     const { lat, lon, searchQuery } = request.query; 
 
     try {
-        const weatherResponse = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?key=5a3dadd8b09144089b3e76db33b590d3&city=${searchQuery}`);
-        const cities = weatherResponse.data;// Stores the response data from the weather API
+        console.log("CACHE MISS")
+        let cities = cache.get(searchQuery);// Stores the response data from the weather API
+        if( cities === undefined ){
+            let weatherResponse = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily?key=5a3dadd8b09144089b3e76db33b590d3&city=${searchQuery}`);
+            cities = weatherResponse.data;// Stores the response data from the weather API
+            cache.set(searchQuery, cities);
 
-        if (cities === undefined) {
-            // Throw an error if the cities data is undefined
-            const error = new Error('City not found');
-            error.statusCode = 500;
-            throw error;
+        }else{
+            console.log("CACHE HIT")
         }
 
         const forecastArray = cities.data.map((element) => new Forecast(element.datetime, element.weather.description));
